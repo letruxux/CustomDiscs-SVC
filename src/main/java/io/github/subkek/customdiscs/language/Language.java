@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public enum Language {
   RUSSIAN("ru_RU"),
   ENGLISH("en_US");
+  ITALIAN("it_IT");
 
   private final String label;
 
