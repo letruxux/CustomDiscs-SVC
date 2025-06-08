@@ -75,7 +75,7 @@ public class SearchYtSubCommand extends AbstractSubCommand {
     String encodedQuery = URLEncoder.encode(searchQuery, StandardCharsets.UTF_8);
     String url = baseUrl + "/search?q=" + encodedQuery + "&filter=videos";
 
-    CustomDiscs.sendMessage(player, plugin.getLanguage().component("command.searchyt.messages.searching", searchQuery));
+    CustomDiscs.sendMessage(player, plugin.getLanguage().PComponent("command.searchyt.messages.searching", searchQuery));
 
     HttpUtils.GET(url, response -> {
       plugin.getFoliaLib().getScheduler().runAsync(task -> {
