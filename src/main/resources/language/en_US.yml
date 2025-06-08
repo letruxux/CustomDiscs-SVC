@@ -28,7 +28,6 @@ language:
         searching: '<gray>Searching for {0}...'
         search-results-for: '<yellow>🔎 Search results for "{0}":'
         click-to-select: '<yellow>➤ Click to select a video.'
-        gave: '<yellow>➤ Click to select a video.'
     getyt:
       syntax: '<dark_aqua>/cd getyt <search index>'
       description: '<white> You should not use this manually.'
