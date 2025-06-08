@@ -21,6 +21,17 @@ language:
     file:
       not-found: 'File not found!'
   command:
+    searchyt:
+      syntax: '<dark_aqua>/cd searchyt <search query>'
+      description: '<white>Searches for videos on YouTube.'
+      messages:
+        searching: '<gray>Searching for {0}...'
+        search-results-for: '<yellow>🔎 Search results for "{0}":'
+        click-to-select: '<yellow>➤ Click to select a video.'
+        gave: '<yellow>➤ Click to select a video.'
+    getyt:
+      syntax: '<dark_aqua>/cd getyt <search index>'
+      description: '<white> You should not use this manually.'
     download:
       syntax: '<dark_aqua>/cd download <direct link> <name.extension>'
       description: '<white>Downloads music file from URL.'

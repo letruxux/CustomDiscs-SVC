@@ -34,6 +34,10 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class CustomDiscs extends JavaPlugin {
   public static final String PLUGIN_ID = "customdiscs";
@@ -55,6 +59,9 @@ public class CustomDiscs extends JavaPlugin {
   public int discsPlayed = 0;
   private boolean voicechatAddonRegistered = false;
   public boolean youtubeSupport = false;
+
+  /* maybe this shouldnt be here */
+  public Map<UUID, List<YoutubeVideo>> userSearchResults = new HashMap<>();
 
   public static CustomDiscs getPlugin() {
     return getPlugin(CustomDiscs.class);

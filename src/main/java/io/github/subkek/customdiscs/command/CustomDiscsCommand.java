@@ -20,6 +20,8 @@ public class CustomDiscsCommand extends CommandAPICommand {
     this.withSubcommand(new CreateSubCommand());
     this.withSubcommand(new CreateYtSubCommand());
     this.withSubcommand(new DistanceSubCommand());
+    this.withSubcommand(new SearchYtSubCommand());
+    this.withSubcommand(new GetYtSubCommand());
 
     this.executes(this::execute);
   }
