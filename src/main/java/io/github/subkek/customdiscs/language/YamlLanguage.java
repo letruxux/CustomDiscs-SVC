@@ -28,10 +28,28 @@ public class YamlLanguage {
       boolean isNewFile = false;
 
       if (!languageFile.exists()) {
-        InputStream inputStream = plugin.getClass().getClassLoader().getResourceAsStream(Formatter.format("language/{0}.yml",
-            languageExists(plugin.getCDConfig().getLocale()) ? plugin.getCDConfig().getLocale() : Language.ENGLISH.getLabel()
-        ));
+        // Use forward slashes for resource paths (not File.separator)
+        String resourcePath = Formatter.format("language/{0}.yml",
+                languageExists(plugin.getCDConfig().getLocale()) ? plugin.getCDConfig().getLocale() : Language.ENGLISH.getLabel()
+        );
+
+        InputStream inputStream = plugin.getClass().getClassLoader().getResourceAsStream(resourcePath);
+
+        // Check if the resource exists
+        if (inputStream == null) {
+          CustomDiscs.error("Language resource not found: " + resourcePath);
+          // Try fallback to English
+          String fallbackPath = "language/" + Language.ENGLISH.getLabel() + ".yml";
+          inputStream = plugin.getClass().getClassLoader().getResourceAsStream(fallbackPath);
+
+          if (inputStream == null) {
+            CustomDiscs.error("Fallback language resource not found: " + fallbackPath);
+            return; // Cannot proceed without any language file
+          }
+        }
+
         Files.copy(inputStream, languageFile.toPath());
+        inputStream.close(); // Always close the stream
         isNewFile = true;
       }
 
@@ -44,16 +62,33 @@ public class YamlLanguage {
 
       if (!language.getString("version").equals(plugin.getDescription().getVersion()) || plugin.getCDConfig().isDebug()) {
         File oldLanguageFile = new File(languageFolder.getPath(), Formatter.format(
-            "{0}-{1}.backup",
-            languageFile.getName(),
-            new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(new Date())
+                "{0}-{1}.backup",
+                languageFile.getName(),
+                new SimpleDateFormat("yyyy-MM-dd_HH_mm_ss").format(new Date())
         ));
         if (oldLanguageFile.exists()) oldLanguageFile.delete();
         Files.copy(languageFile.toPath(), oldLanguageFile.toPath());
         languageFile.delete();
 
-        InputStream inputStream = plugin.getClass().getClassLoader().getResourceAsStream(Formatter.format("language{0}{1}.yml", File.separator, plugin.getCDConfig().getLocale()));
+        // Use forward slashes for resource paths
+        String resourcePath = Formatter.format("language/{0}.yml", plugin.getCDConfig().getLocale());
+        InputStream inputStream = plugin.getClass().getClassLoader().getResourceAsStream(resourcePath);
+
+        // Check if the resource exists
+        if (inputStream == null) {
+          CustomDiscs.error("Language resource not found during update: " + resourcePath);
+          // Try fallback to English
+          String fallbackPath = "language/" + Language.ENGLISH.getLabel() + ".yml";
+          inputStream = plugin.getClass().getClassLoader().getResourceAsStream(fallbackPath);
+
+          if (inputStream == null) {
+            CustomDiscs.error("Fallback language resource not found during update: " + fallbackPath);
+            return; // Cannot proceed without any language file
+          }
+        }
+
         Files.copy(inputStream, languageFile.toPath());
+        inputStream.close(); // Always close the stream
 
         Object oldLanguage = language.getMapValues(true).get("language");
 
@@ -77,7 +112,7 @@ public class YamlLanguage {
 
   private String getFormattedString(String key, Object... replace) {
     return Formatter.format(language.getString(
-        Formatter.format("language.{0}", key), Formatter.format("<{0}>", key)), replace);
+            Formatter.format("language.{0}", key), Formatter.format("<{0}>", key)), replace);
   }
 
   public Component component(String key, Object... replace) {
@@ -97,7 +132,8 @@ public class YamlLanguage {
   }
 
   public boolean languageExists(String label) {
-    InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(Formatter.format("language{0}{1}.yml", File.separator, label));
+    // Use forward slashes for resource paths
+    InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(Formatter.format("language/{0}.yml", label));
     return !Objects.isNull(inputStream);
   }
 }
