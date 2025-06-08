@@ -23,8 +23,6 @@ import java.util.List;
 
 public class SearchYtSubCommand extends AbstractSubCommand {
   private final CustomDiscs plugin = CustomDiscs.getPlugin();
-  /* TODO: next thing to do is add a config to change this */
-  private final String baseUrl = "https://nyc1.piapi.ggtyler.dev";
 
   public SearchYtSubCommand() {
     super("searchyt");
@@ -68,23 +66,24 @@ public class SearchYtSubCommand extends AbstractSubCommand {
     String searchQuery = getArgumentValue(arguments, "search_query", String.class);
 
     if (searchQuery.isEmpty()) {
-      CustomDiscs.sendMessage(player, plugin.getLanguage().PComponent("error.command.search-query-empty"));
+      CustomDiscs.sendMessage(player, plugin.getLanguage().PComponent("command.searchyt.messages.error.search-query-empty"));
       return;
     }
 
     String encodedQuery = URLEncoder.encode(searchQuery, StandardCharsets.UTF_8);
-    String url = baseUrl + "/search?q=" + encodedQuery + "&filter=videos";
+    String url = plugin.getCDConfig().getPipedBaseUrl() + "/search?q=" + encodedQuery + "&filter=videos";
 
     CustomDiscs.sendMessage(player, plugin.getLanguage().PComponent("command.searchyt.messages.searching", searchQuery));
 
-    HttpUtils.GET(url, response -> {
-      plugin.getFoliaLib().getScheduler().runAsync(task -> {
-        List<YoutubeVideo> videos = parsePipedBody(response);
-        plugin.userSearchResults.put(player.getUniqueId(), videos);
+    HttpUtils.GET(url, response -> plugin.getFoliaLib().getScheduler().runAsync(task -> {
+      List<YoutubeVideo> videos = parsePipedBody(response);
+      plugin.userSearchResults.put(player.getUniqueId(), videos);
 
-        sendSearchResults(player, searchQuery, videos);
-      });
-    }, Throwable::printStackTrace);
+      sendSearchResults(player, searchQuery, videos);
+    }), error -> {
+      CustomDiscs.sendMessage(player, plugin.getLanguage().PComponent("command.searchyt.messages.error.fetching-error"));
+      error.printStackTrace();
+    });
 
   }
 

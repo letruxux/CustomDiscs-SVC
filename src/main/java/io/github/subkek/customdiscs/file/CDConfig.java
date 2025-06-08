@@ -132,6 +132,7 @@ public class CDConfig {
   private boolean useCustomModelDataYoutube = false;
   private int customModelDataYoutube = 0;
   private int distanceCommandMaxDistance = 64;
+  private String pipedBaseUrl = "https://pipedapi.ducks.party";
 
   private void commandSettings() {
     maxDownloadSize = getInt("command.download.max-size", maxDownloadSize,
@@ -167,6 +168,12 @@ public class CDConfig {
 
     youtubePoToken = getString("providers.youtube.po-token.token", youtubePoToken);
     youtubePoVisitorData = getString("providers.youtube.po-token.visitor-data", youtubePoVisitorData);
+
+    pipedBaseUrl = getString("providers.youtube.piped-base-url", pipedBaseUrl,
+            "piped.video URL to access youtube api, needed for /ytsearch and /ytget",
+            "Default: https://pipedapi.ducks.party",
+            "List of community-made instances: https://github.com/TeamPiped/documentation/blob/main/content/docs/public-instances/index.md"
+    );
 
     setComment("providers.youtube.po-token", """
         If you have oauth2 enabled, leave these fields blank.

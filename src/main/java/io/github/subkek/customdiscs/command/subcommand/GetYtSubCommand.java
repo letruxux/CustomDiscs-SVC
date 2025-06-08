@@ -73,7 +73,7 @@ public class GetYtSubCommand extends AbstractSubCommand {
     if (plugin.userSearchResults.isEmpty() ||
             !plugin.userSearchResults.containsKey(player.getUniqueId()) ||
             resultIndex >= plugin.userSearchResults.get(player.getUniqueId()).size() || resultIndex < 0) {
-      CustomDiscs.sendMessage(player, plugin.getLanguage().PComponent("error.command.search-query-empty"));
+      CustomDiscs.sendMessage(player, plugin.getLanguage().PComponent("command.searchyt.messages.error.search-query-empty"));
       return;
     }
 

@@ -3,7 +3,6 @@ package io.github.subkek.customdiscs.util;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.util.function.Consumer;
@@ -19,7 +18,14 @@ public class HttpUtils {
                 .build();
 
         client.sendAsync(request, BodyHandlers.ofString())
-                .thenApply(HttpResponse::body)
+                .thenApply(response -> {
+                    int statusCode = response.statusCode();
+                    if (statusCode >= 200 && statusCode < 300) {
+                        return response.body();
+                    } else {
+                        throw new RuntimeException("HTTP error: " + statusCode + " - " + response.body());
+                    }
+                })
                 .thenAccept(onSuccess)
                 .exceptionally(ex -> {
                     onError.accept(ex);
